@@ -8,8 +8,8 @@ app = Flask(__name__)
 app.secret_key = 'o7'
 bootstrap = Bootstrap5(app)
 Talisman(app, content_security_policy={
-    'style-src': 'cdn.jsdelivr.net',
-    'script-src': 'cdn.jsdelivr.net',
+    'style-src': ["'self'", 'cdn.jsdelivr.net'],
+    'script-src': ["'self'", 'cdn.jsdelivr.net'],
 })
 
 
