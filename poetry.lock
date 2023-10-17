@@ -12,6 +12,21 @@ files = [
 ]
 
 [[package]]
+name = "bootstrap-flask"
+version = "2.3.2"
+description = "Bootstrap 4 & 5 helper for your Flask projects."
+optional = false
+python-versions = "*"
+files = [
+    {file = "Bootstrap-Flask-2.3.2.tar.gz", hash = "sha256:f94ba6309d61c058fb5fb581bc3344cef389a6da69cf655330d101fa4a161db7"},
+    {file = "Bootstrap_Flask-2.3.2-py2.py3-none-any.whl", hash = "sha256:2505257518c2efa1df645b5d87b4dc62dd28f6b3c04130ba82d735890f307715"},
+]
+
+[package.dependencies]
+Flask = "*"
+WTForms = "*"
+
+[[package]]
 name = "click"
 version = "8.1.7"
 description = "Composable command line interface toolkit"
@@ -72,6 +87,36 @@ files = [
 [package.dependencies]
 flask = ">=2.2.5"
 sqlalchemy = ">=2.0.16"
+
+[[package]]
+name = "flask-talisman"
+version = "1.1.0"
+description = "HTTP security headers for Flask."
+optional = false
+python-versions = "*"
+files = [
+    {file = "flask-talisman-1.1.0.tar.gz", hash = "sha256:c5f486f5f54420729f84b3c3850cd63f96e8b033a9629bee66c524ea363797ff"},
+    {file = "flask_talisman-1.1.0-py2.py3-none-any.whl", hash = "sha256:3c42b610ebe49b0e35ca150e179bf51aa1da01e4635b49a674868ea681046208"},
+]
+
+[[package]]
+name = "flask-wtf"
+version = "1.2.1"
+description = "Form rendering, validation, and CSRF protection for Flask with WTForms."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "flask_wtf-1.2.1-py3-none-any.whl", hash = "sha256:fa6793f2fb7e812e0fe9743b282118e581fb1b6c45d414b8af05e659bd653287"},
+    {file = "flask_wtf-1.2.1.tar.gz", hash = "sha256:8bb269eb9bb46b87e7c8233d7e7debdf1f8b74bf90cc1789988c29b37a97b695"},
+]
+
+[package.dependencies]
+flask = "*"
+itsdangerous = "*"
+wtforms = "*"
+
+[package.extras]
+email = ["email-validator"]
 
 [[package]]
 name = "greenlet"
@@ -466,7 +511,24 @@ MarkupSafe = ">=2.1.1"
 [package.extras]
 watchdog = ["watchdog (>=2.3)"]
 
+[[package]]
+name = "wtforms"
+version = "3.1.0"
+description = "Form validation and rendering for Python web development."
+optional = false
+python-versions = ">=3.8"
+files = [
+    {file = "wtforms-3.1.0-py3-none-any.whl", hash = "sha256:addd7899004fdf9318eb711d33aae9c1973fe80378257b7383e06de2eff7c559"},
+    {file = "wtforms-3.1.0.tar.gz", hash = "sha256:4edd15771630289a5fa343d58822f72749822ca5a39dd33f92ee917cf72b954b"},
+]
+
+[package.dependencies]
+markupsafe = "*"
+
+[package.extras]
+email = ["email-validator"]
+
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "f5041dd59534e34f75fd389b30cb189db58640994316b6438f65f5ff6e330425"
+content-hash = "f914daa6416739b492a9566ceaad047ab7cee634f3b9c426ef354177b301ff13"

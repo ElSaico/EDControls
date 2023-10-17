@@ -10,6 +10,9 @@ python = "^3.11"
 flask = "^3.0.0"
 lxml = "^4.9.3"
 flask-sqlalchemy = "^3.1.1"
+bootstrap-flask = "^2.3.2"
+flask-wtf = "^1.2.1"
+flask-talisman = "^1.1.0"
 
 [build-system]
 requires = ["poetry-core"]

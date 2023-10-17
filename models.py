@@ -17,15 +17,16 @@ class Binding(db.Model):
     label: Mapped[str] = mapped_column(primary_key=True)
     description: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
-    # TODO investigate AssociationProxy for a more seamless access
-    keys: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
+    color_by: Mapped[str]  # TODO choices
+    # TODO investigate AssociationProxy once we know how things should be queried
+    commands: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
 
 
 class BindingCommand(db.Model):
     binding_id = mapped_column(ForeignKey("binding.label"), primary_key=True)
     command_id = mapped_column(ForeignKey("command.label"), primary_key=True)
 
-    binding: Mapped["Binding"] = relationship(back_populates="keys")
+    binding: Mapped["Binding"] = relationship(back_populates="commands")
     command: Mapped["Command"] = relationship()
     # TODO modifiers list their own devices; should we take it into account or assume they're the same as the keys'?
     primary_device: Mapped[str]  # not an FK as we want to store unknown devices
@@ -38,7 +39,7 @@ class BindingCommand(db.Model):
 
 class Command(db.Model):
     label: Mapped[str] = mapped_column(primary_key=True)
-    type: Mapped[str]
+    category: Mapped[str]
 
 
 class Device(db.Model):
