@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
+from flask_migrate import Migrate
 from flask_talisman import Talisman
 
 import forms
@@ -14,9 +15,7 @@ Talisman(app, content_security_policy={
     'script-src': ["'self'", 'cdn.jsdelivr.net'],
 })
 models.db.init_app(app)
-
-with app.app_context():
-    models.db.create_all()
+migrate = Migrate(app, models.db)
 
 
 @app.route("/")
