@@ -17,7 +17,7 @@ class Binding(db.Model):
     label: Mapped[str] = mapped_column(primary_key=True)
     description: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
-    color_by: Mapped[str]  # TODO choices
+    color_by: Mapped[str]
     # TODO investigate AssociationProxy once we know how things should be queried
     commands: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
 

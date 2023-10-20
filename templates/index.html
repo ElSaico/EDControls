@@ -1,6 +1,19 @@
 {% extends "base.html" %}
-{% from 'bootstrap5/form.html' import render_form %}
+{% from 'bootstrap5/form.html' import render_hidden_errors, render_field %}
 
 {% block content %}
-    {{ render_form(form) }}
+    <form method="POST" action="/">
+        {{ form.csrf_token() }}
+        {{ render_hidden_errors(form) }}
+        {{ render_field(form.binds_file) }}
+        {{ render_field(form.description) }}
+        <div class="mb-3">
+            <label for="categories" class="form-label">Categories</label>
+            {% for category in form.categories %}
+            {{ render_field(category, form_group_classes='form-switch', checked='checked') }}
+            {% endfor %}
+        </div>
+        {{ render_field(form.color_by) }}
+        {{ render_field(form.generate) }}
+    </form>
 {% endblock %}
