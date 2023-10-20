@@ -1,3 +1,4 @@
+from lxml import etree
 from flask import Flask, render_template
 from flask_bootstrap import Bootstrap5
 from flask_migrate import Migrate
@@ -34,8 +35,35 @@ def upload_bindings():
             categories=form.categories.data,
         )
         models.db.session.add(binds)
-        # TODO XML processing and bla
+        root = etree.fromstring(binds.raw_file)
+        for element in root.findall(".//Binding") + root.findall(".//Primary") + root.findall(".//Secondary"):
+            command_name = element.getparent().tag
+            command = models.db.session.get(models.Command, command_name)
+            if not command:
+                app.logger.warning('Unregistered command: %s', command_name)
+                continue
+            if command.category not in binds.categories:
+                continue
+            if element.get('Device') == '{NoDevice}':
+                continue
+            keymap = models.KeyMap(device=element.get('Device'), key=element.get('Key'))
+            models.db.session.add(keymap)
+            if keymap.device == 'Keyboard':
+                modifiers = [modifier.get('Key') for modifier in element.xpath('./Modifier')]
+            else:
+                modifiers = []
+                for modifier in element.xpath('./Modifier'):
+                    ...  # TODO upsert binds.modifiers and append index
+            binding_command = models.BindingCommand(
+                binding_id=binds.id,
+                command_id=command_name,
+                mapping_id=keymap.id,
+                modifiers=modifiers,
+            )
+            models.db.session.add(binding_command)
         models.db.session.commit()
+        # TODO redirect to binding page
+    # TODO redirect to index showing errors
 
 
 @app.get("/bindings")

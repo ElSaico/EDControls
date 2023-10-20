@@ -4,7 +4,8 @@ from datetime import datetime
 from typing import List, Optional
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, ForeignKey, JSON
+from sqlalchemy import func, JSON, ForeignKey
+from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -17,7 +18,7 @@ db = SQLAlchemy(model_class=Base)
 
 def generate_binds_label():
     name = ''.join(random.choice(string.ascii_lowercase) for _ in range(6))
-    while db.session.execute(db.select(Binding).filter_by(label=name)).scalar():
+    while db.session.get(Binding, name):
         name = ''.join(random.choice(string.ascii_lowercase) for _ in range(6))
     return name
 
@@ -31,21 +32,27 @@ class Binding(db.Model):
     categories = mapped_column(JSON)
     # TODO investigate AssociationProxy once we know how things should be queried
     commands: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
+    modifiers = relationship('KeyMap', order_by='KeyMap.index', collection_class=ordering_list('index', count_from=1))
 
 
 class BindingCommand(db.Model):
-    binding_id = mapped_column(ForeignKey("binding.label"), primary_key=True)
-    command_id = mapped_column(ForeignKey("command.label"), primary_key=True)
-
+    id: Mapped[int] = mapped_column(primary_key=True)
+    binding_id: Mapped[str] = mapped_column(ForeignKey("binding.label"))
     binding: Mapped["Binding"] = relationship(back_populates="commands")
+    command_id: Mapped[str] = mapped_column(ForeignKey("command.label"))
     command: Mapped["Command"] = relationship()
-    # TODO modifiers list their own devices; should we take it into account or assume they're the same as the keys'?
-    primary_device: Mapped[str]  # not an FK as we want to store unknown devices
-    primary_key: Mapped[str]
-    primary_modifier: Mapped[Optional[str]]
-    secondary_device: Mapped[Optional[str]]
-    secondary_key: Mapped[Optional[str]]
-    secondary_modifier: Mapped[Optional[str]]
+    mapping_id: Mapped[int] = mapped_column(ForeignKey("key_map.id"))
+    mapping: Mapped["KeyMap"] = relationship()
+    modifiers = mapped_column(JSON)  # keys for keyboard, indexes for others
+
+
+class KeyMap(db.Model):
+    id: Mapped[int] = mapped_column(primary_key=True)
+    modifies_id: Mapped[str] = mapped_column(ForeignKey("binding.label"), nullable=True)
+    modifies: Mapped[Optional["Binding"]] = relationship()
+    index: Mapped[int]
+    device: Mapped[str]  # not an FK as we want to store unknown devices
+    key: Mapped[str]
 
 
 class Command(db.Model):
