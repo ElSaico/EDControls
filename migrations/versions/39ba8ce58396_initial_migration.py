@@ -30,6 +30,9 @@ def upgrade():
     op.create_table('command',
     sa.Column('label', sa.String(), nullable=False),
     sa.Column('category', sa.String(), nullable=False),
+    sa.Column('order', sa.Integer(), nullable=False),
+    sa.Column('name', sa.String(), nullable=False),
+    sa.Column('overridden_by', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('label')
     )
     op.create_table('device',

@@ -51,6 +51,9 @@ class BindingCommand(db.Model):
 class Command(db.Model):
     label: Mapped[str] = mapped_column(primary_key=True)
     category: Mapped[str]
+    order: Mapped[int]
+    name: Mapped[str]
+    overridden_by: Mapped[Optional[str]]
 
 
 class Device(db.Model):

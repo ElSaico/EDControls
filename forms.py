@@ -8,18 +8,18 @@ COLOR_CHOICES = [
     ('none', 'No colors'),
 ]
 CATEGORY_CHOICES = [
-    ('ship', 'Ship'),
-    ('srv', 'SRV'),
-    ('scanners', 'Scanners'),
-    ('fighter', 'Fighter'),
-    ('onfoot', 'On Foot'),
-    ('multicrew', 'Multicrew'),
-    ('headlook', 'Head Look'),
-    ('ui', 'UI'),
-    ('galaxymap', 'Galaxy Map'),
-    ('camera', 'Camera'),
-    ('holome', 'Holo-Me'),
-    ('misc', 'Miscellaneous'),
+    ('Ship', 'Ship'),
+    ('SRV', 'SRV'),
+    ('Scanners', 'Scanners'),
+    ('Fighter', 'Fighter'),
+    ('On foot', 'On foot'),
+    ('Multicrew', 'Multicrew'),
+    ('Head look', 'Head look'),
+    ('UI', 'UI'),
+    ('GalMap', 'GalMap'),
+    ('Camera', 'Camera'),
+    ('Holo-Me', 'Holo-Me'),
+    ('Misc', 'Miscellaneous'),
 ]
 FILE_DESCRIPTION = ("On Windows, the bindings are located on "
                     "%LOCALAPPDATA%\\Frontier Developments\\Elite Dangerous\\Options\\Bindings")
