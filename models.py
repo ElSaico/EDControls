@@ -1,8 +1,10 @@
+import random
+import string
 from datetime import datetime
 from typing import List, Optional
 
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import func, ForeignKey
+from sqlalchemy import func, ForeignKey, JSON
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
@@ -13,11 +15,20 @@ class Base(DeclarativeBase):
 db = SQLAlchemy(model_class=Base)
 
 
+def generate_binds_label():
+    name = ''.join(random.choice(string.ascii_lowercase) for _ in range(6))
+    while db.session.execute(db.select(Binding).filter_by(label=name)).scalar():
+        name = ''.join(random.choice(string.ascii_lowercase) for _ in range(6))
+    return name
+
+
 class Binding(db.Model):
-    label: Mapped[str] = mapped_column(primary_key=True)
+    raw_file: Mapped[str]
+    label: Mapped[str] = mapped_column(primary_key=True, default=generate_binds_label)
     description: Mapped[str]
     created_at: Mapped[datetime] = mapped_column(insert_default=func.now())
     color_by: Mapped[str]
+    categories = mapped_column(JSON)
     # TODO investigate AssociationProxy once we know how things should be queried
     commands: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
 

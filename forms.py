@@ -1,5 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import fields, validators, widgets
+from flask_wtf.file import FileRequired, FileAllowed
+from wtforms import fields, widgets
 
 COLOR_CHOICES = [
     ('modifier', 'Color by modifier'),
@@ -31,7 +32,7 @@ class MultiCheckboxField(fields.SelectMultipleField):
 
 
 class BindingCreate(FlaskForm):
-    binds_file = fields.FileField('Bindings file', [validators.input_required()],
+    binds_file = fields.FileField('Bindings file', [FileRequired(), FileAllowed(['binds'])],
                                   description=FILE_DESCRIPTION, render_kw={'accept': '.binds'})
     description = fields.StringField('Public description', description=DESCRIPTION_DESCRIPTION)
     categories = MultiCheckboxField('Categories', choices=CATEGORY_CHOICES)

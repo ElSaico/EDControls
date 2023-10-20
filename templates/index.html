@@ -2,7 +2,7 @@
 {% from 'bootstrap5/form.html' import render_hidden_errors, render_field %}
 
 {% block content %}
-    <form method="POST" action="/">
+    <form method="POST" enctype="multipart/form-data" action="/bindings">
         {{ form.csrf_token() }}
         {{ render_hidden_errors(form) }}
         {{ render_field(form.binds_file) }}

@@ -23,7 +23,22 @@ def index():
     return render_template("index.html", form=forms.BindingCreate())
 
 
-@app.route("/bindings")
+@app.post("/bindings")
+def upload_bindings():
+    form = forms.BindingCreate()
+    if form.validate_on_submit():
+        binds = models.Binding(
+            raw_file=form.binds_file.data.read(),
+            description=form.description.data,
+            color_by=form.color_by.data,
+            categories=form.categories.data,
+        )
+        models.db.session.add(binds)
+        # TODO XML processing and bla
+        models.db.session.commit()
+
+
+@app.get("/bindings")
 def list_bindings():
     ...
 
