@@ -15,6 +15,9 @@ flask-wtf = "^1.2.1"
 flask-talisman = "^1.1.0"
 flask-migrate = "^4.0.5"
 
+[tool.poetry.group.dev.dependencies]
+flask-shell-ipython = "^0.5.1"
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
