@@ -32,7 +32,8 @@ class Binding(db.Model):
     categories = mapped_column(JSON)
     # TODO investigate AssociationProxy once we know how things should be queried
     commands: Mapped[List["BindingCommand"]] = relationship(back_populates="binding")
-    modifiers = relationship('KeyMap', order_by='KeyMap.index', collection_class=ordering_list('index', count_from=1))
+    modifiers = relationship('Modifier', order_by='Modifier.index',
+                             collection_class=ordering_list('index', count_from=1))
 
 
 class BindingCommand(db.Model):
@@ -41,17 +42,17 @@ class BindingCommand(db.Model):
     binding: Mapped["Binding"] = relationship(back_populates="commands")
     command_id: Mapped[str] = mapped_column(ForeignKey("command.label"))
     command: Mapped["Command"] = relationship()
-    mapping_id: Mapped[int] = mapped_column(ForeignKey("key_map.id"))
-    mapping: Mapped["KeyMap"] = relationship()
+    device: Mapped[str]  # not an FK as we want to store unknown devices
+    key: Mapped[str]
     modifiers = mapped_column(JSON)  # keys for keyboard, indexes for others
 
 
-class KeyMap(db.Model):
+class Modifier(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    modifies_id: Mapped[str] = mapped_column(ForeignKey("binding.label"), nullable=True)
-    modifies: Mapped[Optional["Binding"]] = relationship()
+    binding_id: Mapped[str] = mapped_column(ForeignKey("binding.label"))
+    binding: Mapped["Binding"] = relationship(back_populates='modifiers')
     index: Mapped[int]
-    device: Mapped[str]  # not an FK as we want to store unknown devices
+    device: Mapped[str]
     key: Mapped[str]
 
 

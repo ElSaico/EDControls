@@ -20,7 +20,7 @@ migrate = Migrate(app, models.db)
 
 
 @app.route("/")
-def index():
+def home():
     return render_template("index.html", form=forms.BindingCreate())
 
 
@@ -46,18 +46,27 @@ def upload_bindings():
                 continue
             if element.get('Device') == '{NoDevice}':
                 continue
-            keymap = models.KeyMap(device=element.get('Device'), key=element.get('Key'))
-            models.db.session.add(keymap)
-            if keymap.device == 'Keyboard':
+            if element.get('Device') == 'Keyboard':
                 modifiers = [modifier.get('Key') for modifier in element.xpath('./Modifier')]
             else:
                 modifiers = []
                 for modifier in element.xpath('./Modifier'):
-                    ...  # TODO upsert binds.modifiers and append index
+                    device = modifier.get('Device')
+                    key = modifier.get('Key')
+                    index = models.db.session.execute(
+                        models.db.select(models.Modifier.index)
+                        .filter_by(binding_id=binds.label, device=device, key=key)
+                    ).scalar()
+                    if not index:
+                        modifier = models.Modifier(device=device, key=key)
+                        binds.modifiers.append(modifier)
+                        index = modifier.index
+                    modifiers.append(index)
             binding_command = models.BindingCommand(
-                binding_id=binds.id,
+                binding_id=binds.label,
                 command_id=command_name,
-                mapping_id=keymap.id,
+                device=element.get('Device'),
+                key=element.get('Key'),
                 modifiers=modifiers,
             )
             models.db.session.add(binding_command)
