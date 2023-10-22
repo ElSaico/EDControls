@@ -8,6 +8,8 @@ from sqlalchemy import func, JSON, ForeignKey
 from sqlalchemy.ext.orderinglist import ordering_list
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
+__all__ = ['db', 'Binding', 'BindingCommand', 'Modifier', 'Command', 'Device', 'DeviceTemplate']
+
 
 class Base(DeclarativeBase):
     ...
@@ -46,6 +48,12 @@ class BindingCommand(db.Model):
     key: Mapped[str]
     modifiers = mapped_column(JSON)  # keys for keyboard, indexes for others
 
+    def __repr__(self) -> str:
+        if self.device == 'Keyboard':
+            return f'[{self.binding_id}] {self.command_id}: {"+".join(self.modifiers)}{"+" if self.modifiers else ""}{self.key}'
+        else:
+            return f'[{self.binding_id}] {self.command_id}: {self.device} - {"".join(f"[{m}]" for m in self.modifiers)}{self.key}'
+
 
 class Modifier(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -54,6 +62,9 @@ class Modifier(db.Model):
     index: Mapped[int]
     device: Mapped[str]
     key: Mapped[str]
+
+    def __repr__(self) -> str:
+        return f'[{self.binding_id}] Modifier {self.index}: {self.device} - {self.key}'
 
 
 class Command(db.Model):
@@ -66,5 +77,12 @@ class Command(db.Model):
 
 class Device(db.Model):
     label: Mapped[str] = mapped_column(primary_key=True)
+    template_id: Mapped[str] = mapped_column(ForeignKey("device_template.filename"))
+    template: Mapped["DeviceTemplate"] = relationship(back_populates='devices')
+
+
+class DeviceTemplate(db.Model):
+    filename: Mapped[str] = mapped_column(primary_key=True)
     name: Mapped[str]
-    filename: Mapped[str]
+    # TODO combined (e.g. HOTAS) templates
+    devices: Mapped[List["Device"]] = relationship(back_populates="template")

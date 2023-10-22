@@ -2,7 +2,7 @@
 
 Revision ID: 39ba8ce58396
 Revises: 
-Create Date: 2023-10-21 03:59:46.497964
+Create Date: 2023-10-21 20:43:36.610314
 
 """
 from alembic import op
@@ -35,11 +35,10 @@ def upgrade():
     sa.Column('overridden_by', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('label')
     )
-    op.create_table('device',
-    sa.Column('label', sa.String(), nullable=False),
-    sa.Column('name', sa.String(), nullable=False),
+    op.create_table('device_template',
     sa.Column('filename', sa.String(), nullable=False),
-    sa.PrimaryKeyConstraint('label')
+    sa.Column('name', sa.String(), nullable=False),
+    sa.PrimaryKeyConstraint('filename')
     )
     op.create_table('modifier',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -61,6 +60,12 @@ def upgrade():
     sa.ForeignKeyConstraint(['command_id'], ['command.label'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('device',
+    sa.Column('label', sa.String(), nullable=False),
+    sa.Column('template_id', sa.String(), nullable=False),
+    sa.ForeignKeyConstraint(['template_id'], ['device_template.filename'], ),
+    sa.PrimaryKeyConstraint('label')
+    )
     # ### end Alembic commands ###
 
 
@@ -69,6 +74,7 @@ def downgrade():
     op.drop_table('binding_command')
     op.drop_table('modifier')
     op.drop_table('device')
+    op.drop_table('device_template')
     op.drop_table('command')
     op.drop_table('binding')
     # ### end Alembic commands ###
